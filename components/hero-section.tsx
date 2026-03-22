@@ -1,13 +1,91 @@
 "use client"
 
-import { motion, useScroll, useTransform } from "framer-motion"
-import { ChevronDown, Terminal, Code2, Braces, Zap, Shield, Cpu } from "lucide-react"
+import { motion, useScroll, useTransform, useInView, animate } from "framer-motion"
+import { ChevronDown, Terminal, Code2, Braces, Zap, Shield, Cpu, Download } from "lucide-react"
 import { CodeTerminal } from "./code-terminal"
 import { CharReveal } from "./text-reveal"
 import { MagneticButton } from "./magnetic-button"
 import { GlitchText } from "./glitch-text"
 import { MorphingBlob } from "./morphing-blob"
-import { useRef } from "react"
+import { GradientBorder } from "./gradient-border"
+import { useRef, useEffect, useState } from "react"
+
+function AnimatedCounter({ value, suffix, className }: { value: number; suffix: string; className?: string }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  const isInView = useInView(ref, { once: true, margin: "-50px" })
+  const [displayValue, setDisplayValue] = useState(0)
+
+  useEffect(() => {
+    if (!isInView) return
+
+    const controls = animate(0, value, {
+      duration: 2,
+      ease: "easeOut",
+      onUpdate(latest) {
+        setDisplayValue(Math.round(latest))
+      },
+    })
+
+    return () => controls.stop()
+  }, [isInView, value])
+
+  return (
+    <span ref={ref} className={className}>
+      {displayValue}{suffix}
+    </span>
+  )
+}
+
+const rotatingTitles = [
+  "Building AI + Cyber Systems",
+  "Full Stack Developer",
+  "AI/ML Engineer",
+  "Cybersecurity Enthusiast",
+]
+
+function TypewriterCycle() {
+  const [titleIndex, setTitleIndex] = useState(0)
+  const [charIndex, setCharIndex] = useState(0)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  useEffect(() => {
+    const currentTitle = rotatingTitles[titleIndex]
+
+    if (!isDeleting && charIndex < currentTitle.length) {
+      // Typing forward
+      const timeout = setTimeout(() => {
+        setCharIndex((prev) => prev + 1)
+      }, 60)
+      return () => clearTimeout(timeout)
+    }
+
+    if (!isDeleting && charIndex === currentTitle.length) {
+      // Pause at end before deleting
+      const timeout = setTimeout(() => {
+        setIsDeleting(true)
+      }, 2000)
+      return () => clearTimeout(timeout)
+    }
+
+    if (isDeleting && charIndex > 0) {
+      // Deleting
+      const timeout = setTimeout(() => {
+        setCharIndex((prev) => prev - 1)
+      }, 30)
+      return () => clearTimeout(timeout)
+    }
+
+    if (isDeleting && charIndex === 0) {
+      // Move to next title
+      setIsDeleting(false)
+      setTitleIndex((prev) => (prev + 1) % rotatingTitles.length)
+    }
+  }, [charIndex, isDeleting, titleIndex])
+
+  const currentTitle = rotatingTitles[titleIndex]
+
+  return <span>{currentTitle.slice(0, charIndex)}</span>
+}
 
 function FloatingIcon({ icon: Icon, delay, x, y, rotate }: { icon: any; delay: number; x: string; y: string; rotate: number }) {
   return (
@@ -111,27 +189,27 @@ export function HeroSection() {
             </motion.span>
           </motion.div>
 
-          {/* Main name with character reveal + subtle shake + shimmer */}
+          {/* Main name with subtle shake + shimmer */}
           <motion.h1
-            initial={{ opacity: 0 }}
+            initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
             animate={{
               opacity: 1,
+              y: 0,
+              filter: "blur(0px)",
               x: [0, -1, 1, -0.5, 0.5, 0],
-              y: [0, 0.5, -0.5, 0.5, -0.5, 0],
             }}
             transition={{
-              opacity: { delay: 0.3, duration: 0.5 },
-              x: { duration: 4, repeat: Infinity, ease: "easeInOut", repeatType: "mirror" },
-              y: { duration: 5, repeat: Infinity, ease: "easeInOut", repeatType: "mirror" },
+              opacity: { delay: 0.3, duration: 0.8 },
+              y: { delay: 0.3, duration: 0.8, ease: "easeOut" },
+              filter: { delay: 0.3, duration: 0.8 },
+              x: { delay: 1.2, duration: 4, repeat: Infinity, ease: "easeInOut", repeatType: "mirror" },
             }}
-            className="hero-name-shimmer mb-6 text-5xl font-bold tracking-tighter text-white sm:text-7xl md:text-8xl"
+            className="mb-6 text-5xl font-bold tracking-tighter sm:text-7xl md:text-8xl"
             style={{ fontFamily: 'var(--font-chakra)' }}
           >
-            <GlitchText className="inline-block"><CharReveal delay={0.4}>GANESH</CharReveal></GlitchText>
+            <GlitchText className="inline-block shimmer-white">GANESH</GlitchText>
             <br />
-            <span className="text-[#00ff88]">
-              <GlitchText className="inline-block"><CharReveal delay={0.8}>KHETAWAT</CharReveal></GlitchText>
-            </span>
+            <GlitchText className="inline-block shimmer-green">KHETAWAT</GlitchText>
           </motion.h1>
 
           {/* Subtitle with typing effect */}
@@ -148,7 +226,7 @@ export function HeroSection() {
             >
               {">"}
             </motion.span>
-            <span>Building AI + Cyber Systems</span>
+            <TypewriterCycle />
             <motion.span
               animate={{ opacity: [1, 0] }}
               transition={{ duration: 0.8, repeat: Infinity }}
@@ -178,9 +256,9 @@ export function HeroSection() {
             className="mt-8 flex items-center justify-center gap-6 lg:justify-start"
           >
             {[
-              { value: "5+", label: "YEARS EXP", color: "text-[#00ff88]" },
-              { value: "50+", label: "PROJECTS", color: "text-white" },
-              { value: "99%", label: "UPTIME", color: "text-white" },
+              { value: 5, suffix: "+", label: "YEARS EXP", color: "text-[#00ff88]" },
+              { value: 50, suffix: "+", label: "PROJECTS", color: "text-white" },
+              { value: 99, suffix: "%", label: "UPTIME", color: "text-white" },
             ].map((stat, i) => (
               <motion.div
                 key={stat.label}
@@ -188,11 +266,42 @@ export function HeroSection() {
                 transition={{ type: "spring", stiffness: 400 }}
                 className="text-center"
               >
-                <div className={`font-mono text-2xl font-bold ${stat.color}`}>{stat.value}</div>
+                <div className={`font-mono text-2xl font-bold ${stat.color}`}>
+                  <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                </div>
                 <div className="font-mono text-xs text-white/40">{stat.label}</div>
               </motion.div>
             ))}
             {/* Dividers rendered between stats */}
+          </motion.div>
+
+          {/* Download Resume button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 2.1, duration: 0.8 }}
+            className="mt-8 flex justify-center lg:justify-start"
+          >
+            <MagneticButton strength={0.3}>
+              <motion.a
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05, borderColor: "rgba(0, 255, 136, 0.5)" }}
+                whileTap={{ scale: 0.95 }}
+                className="group inline-flex items-center gap-2 border border-white/20 px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-white/70 transition-colors hover:bg-white/5 hover:text-white"
+              >
+                <Download className="h-3.5 w-3.5 text-[#00ff88] transition-transform group-hover:translate-y-[1px]" />
+                <span>Download Resume</span>
+                <motion.span
+                  animate={{ opacity: [0.3, 1, 0.3] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="text-[#00ff88]"
+                >
+                  .pdf
+                </motion.span>
+              </motion.a>
+            </MagneticButton>
           </motion.div>
         </div>
 
@@ -205,7 +314,9 @@ export function HeroSection() {
           style={{ transformStyle: "preserve-3d", perspective: 1000 }}
           className="hidden lg:block"
         >
-          <CodeTerminal />
+          <GradientBorder>
+            <CodeTerminal />
+          </GradientBorder>
         </motion.div>
       </motion.div>
 

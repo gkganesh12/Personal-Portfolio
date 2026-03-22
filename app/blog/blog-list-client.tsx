@@ -22,6 +22,7 @@ export function BlogListClient({ posts }: { posts: BlogPostMeta[] }) {
 
   useEffect(() => {
     window.scrollTo(0, 0)
+    window.dispatchEvent(new CustomEvent("achievement:blog"))
   }, [])
 
   const allTags = Array.from(new Set(posts.flatMap((p) => p.tags)))

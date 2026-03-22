@@ -313,7 +313,7 @@
   100% { background-position: 200% center; }
 }
 
-.hero-name-shimmer {
+.shimmer-white {
   background: linear-gradient(
     90deg,
     rgba(255,255,255,1) 0%,
@@ -328,14 +328,10 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: nameShimmer 6s linear infinite;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.3)) drop-shadow(0 0 20px rgba(0,255,136,0.15));
 }
 
-.hero-name-shimmer span {
-  -webkit-text-fill-color: inherit;
-}
-
-/* The green KHETAWAT gets its own shimmer */
-.hero-name-shimmer > span {
+.shimmer-green {
   background: linear-gradient(
     90deg,
     rgba(0,255,136,1) 0%,
@@ -351,6 +347,7 @@
   -webkit-text-fill-color: transparent;
   animation: nameShimmer 6s linear infinite;
   animation-delay: -3s;
+  filter: drop-shadow(0 0 10px rgba(0,255,136,0.4)) drop-shadow(0 0 30px rgba(0,255,136,0.2)) drop-shadow(0 0 60px rgba(0,255,136,0.1));
 }
 
 /* === GLITCH TEXT EFFECT === */
@@ -587,4 +584,14 @@ input:focus-visible {
   border-radius: 0.5rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
   margin: 1.5rem 0;
+}
+
+/* === GRADIENT BORDER ROTATION === */
+@keyframes gradient-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-gradient-rotate {
+  animation: gradient-rotate 3s linear infinite;
 }

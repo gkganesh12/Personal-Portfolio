@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { playSoundGlobal } from "./sound-toggle"
 
 const KONAMI_CODE = [
   "ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown",
@@ -17,7 +18,9 @@ export function KonamiEasterEgg() {
   const emojis = ["🚀", "⚡", "💻", "🔥", "✨", "🎮", "👾", "🤖", "💎", "🌟", "🎯", "⭐"]
 
   const triggerCelebration = useCallback(() => {
+    playSoundGlobal("success")
     setIsActivated(true)
+    window.dispatchEvent(new CustomEvent("achievement:konami"))
 
     // Create explosion particles
     const newParticles = Array.from({ length: 50 }, (_, i) => ({

@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState, useCallback, useRef } from "react"
+import { playSoundGlobal } from "./sound-toggle"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Search,
@@ -53,6 +54,7 @@ export function CommandPalette() {
   }, {} as Record<string, typeof commands>)
 
   const executeCommand = useCallback((command: (typeof commands)[0]) => {
+    playSoundGlobal("click")
     setIsOpen(false)
     setSearch("")
 
@@ -84,7 +86,13 @@ export function CommandPalette() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault()
-        setIsOpen((prev) => !prev)
+        setIsOpen((prev) => {
+          if (!prev) {
+            playSoundGlobal("click")
+            window.dispatchEvent(new CustomEvent("achievement:command-palette"))
+          }
+          return !prev
+        })
         setSearch("")
         setSelectedIndex(0)
       }
@@ -109,11 +117,13 @@ export function CommandPalette() {
 
       if (e.key === "ArrowDown") {
         e.preventDefault()
+        playSoundGlobal("hover")
         setSelectedIndex(selected < filtered.length - 1 ? selected + 1 : 0)
       }
 
       if (e.key === "ArrowUp") {
         e.preventDefault()
+        playSoundGlobal("hover")
         setSelectedIndex(selected > 0 ? selected - 1 : filtered.length - 1)
       }
 

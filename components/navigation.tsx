@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X, Search } from "lucide-react"
+import { playSoundGlobal } from "./sound-toggle"
+import { TextScramble } from "./text-scramble"
 
 const navItems = [
   { label: "IDENTITY", href: "#identity" },
@@ -39,9 +41,7 @@ export function Navigation() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           {/* Logo */}
           <a href="#identity" className="font-mono text-sm text-white">
-            <span className="text-white">G</span>
-            <span className="text-[#00ff88]">.</span>
-            <span className="text-white/60">EXE</span>
+            <TextScramble trigger="hover" duration={600}>GANESH.EXE</TextScramble>
           </a>
 
           {/* Desktop navigation */}
@@ -50,6 +50,8 @@ export function Navigation() {
               <a
                 key={item.label}
                 href={item.href}
+                onMouseEnter={() => playSoundGlobal("hover")}
+                onClick={() => playSoundGlobal("click")}
                 className="font-mono text-xs tracking-wider text-white/50 transition-colors hover:text-white"
               >
                 {item.label}

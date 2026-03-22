@@ -154,7 +154,7 @@ export function TimelineSection() {
   const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"])
 
   return (
-    <section ref={containerRef} className="relative px-6 py-24">
+    <section ref={containerRef} id="timeline" className="relative px-6 py-24">
       {/* Ambient glow */}
       <motion.div
         animate={{ opacity: [0.03, 0.06, 0.03] }}

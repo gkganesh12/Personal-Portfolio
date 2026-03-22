@@ -1,12 +1,36 @@
 "use client"
 
 import { motion, useInView } from "framer-motion"
-import { useRef } from "react"
+import { useRef, useState, useEffect } from "react"
 import { MagneticButton } from "./magnetic-button"
+import { TextScramble } from "./text-scramble"
+
+function useVisitorCounter() {
+  const [count, setCount] = useState<number | null>(null)
+
+  useEffect(() => {
+    const STORAGE_KEY = "visitor_count"
+    const SESSION_KEY = "visitor_counted"
+
+    const currentCount = parseInt(localStorage.getItem(STORAGE_KEY) || "1336", 10)
+
+    if (!sessionStorage.getItem(SESSION_KEY)) {
+      const newCount = currentCount + 1
+      localStorage.setItem(STORAGE_KEY, String(newCount))
+      sessionStorage.setItem(SESSION_KEY, "true")
+      setCount(newCount)
+    } else {
+      setCount(currentCount)
+    }
+  }, [])
+
+  return count
+}
 
 export function Footer() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
+  const visitorCount = useVisitorCounter()
 
   return (
     <footer ref={ref} className="relative border-t border-white/10 px-6 py-8">
@@ -23,8 +47,7 @@ export function Footer() {
           {/* Logo/Name */}
           <MagneticButton strength={0.2}>
             <div className="font-mono text-sm text-white/40">
-              <span className="text-white">GANESH</span>
-              <span className="text-[#00ff88]">.EXE</span>
+              <TextScramble trigger="inView" duration={800} className="text-white">GANESH.EXE</TextScramble>
               <span className="ml-2 text-white/30">v1.0.0</span>
             </div>
           </MagneticButton>
@@ -43,6 +66,26 @@ export function Footer() {
             &copy; {new Date().getFullYear()} All systems operational.
           </div>
         </div>
+
+        {/* Visitor Counter */}
+        {visitorCount !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="mt-6 flex justify-center"
+          >
+            <div
+              className="font-mono text-xs tracking-widest"
+              style={{
+                color: "#00ff88",
+                textShadow: "0 0 7px #00ff88, 0 0 14px #00ff8844",
+              }}
+            >
+              VISITOR #{String(visitorCount).padStart(6, "0")}
+            </div>
+          </motion.div>
+        )}
       </motion.div>
     </footer>
   )

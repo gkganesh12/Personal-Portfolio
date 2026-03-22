@@ -1,21 +1,57 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useCallback } from "react"
 import { motion, useSpring } from "framer-motion"
+
+const PARTICLE_COUNT = 10
+
+interface Particle {
+  x: number
+  y: number
+  opacity: number
+  size: number
+}
 
 export function CustomCursor() {
   const [isHovering, setIsHovering] = useState(false)
   const [isClicking, setIsClicking] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const [isMobile, setIsMobile] = useState(true)
+  const [particles, setParticles] = useState<Particle[]>([])
+
+  const positionHistory = useRef<{ x: number; y: number }[]>([])
 
   const cursorX = useSpring(0, { stiffness: 300, damping: 30 })
   const cursorY = useSpring(0, { stiffness: 300, damping: 30 })
   const trailX = useSpring(0, { stiffness: 150, damping: 25 })
   const trailY = useSpring(0, { stiffness: 150, damping: 25 })
 
+  const updateParticles = useCallback(() => {
+    const history = positionHistory.current
+    if (history.length === 0) return
+
+    const newParticles: Particle[] = []
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const historyIndex = Math.min(
+        Math.floor((i / PARTICLE_COUNT) * history.length),
+        history.length - 1
+      )
+      const pos = history[historyIndex]
+      const progress = i / PARTICLE_COUNT
+      newParticles.push({
+        x: pos.x,
+        y: pos.y,
+        opacity: 0.8 * (1 - progress),
+        size: 6 * (1 - progress * 0.7),
+      })
+    }
+    setParticles(newParticles)
+  }, [])
+
   useEffect(() => {
     setIsMobile(window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768)
+
+    let rafId: number
 
     const handleMouseMove = (e: MouseEvent) => {
       setIsVisible(true)
@@ -23,7 +59,18 @@ export function CustomCursor() {
       cursorY.set(e.clientY)
       trailX.set(e.clientX)
       trailY.set(e.clientY)
+
+      positionHistory.current.unshift({ x: e.clientX, y: e.clientY })
+      if (positionHistory.current.length > 30) {
+        positionHistory.current.length = 30
+      }
     }
+
+    const animateParticles = () => {
+      updateParticles()
+      rafId = requestAnimationFrame(animateParticles)
+    }
+    rafId = requestAnimationFrame(animateParticles)
 
     const handleMouseDown = () => setIsClicking(true)
     const handleMouseUp = () => setIsClicking(false)
@@ -55,6 +102,7 @@ export function CustomCursor() {
     document.addEventListener("mouseout", handleHoverEnd)
 
     return () => {
+      cancelAnimationFrame(rafId)
       window.removeEventListener("mousemove", handleMouseMove)
       window.removeEventListener("mousedown", handleMouseDown)
       window.removeEventListener("mouseup", handleMouseUp)
@@ -63,7 +111,7 @@ export function CustomCursor() {
       document.removeEventListener("mouseover", handleHoverStart)
       document.removeEventListener("mouseout", handleHoverEnd)
     }
-  }, [cursorX, cursorY, trailX, trailY])
+  }, [cursorX, cursorY, trailX, trailY, updateParticles])
 
   if (isMobile) return null
 
@@ -73,6 +121,24 @@ export function CustomCursor() {
       <style jsx global>{`
         * { cursor: none !important; }
       `}</style>
+
+      {/* Glowing particle trail */}
+      {isVisible &&
+        particles.map((particle, i) => (
+          <div
+            key={i}
+            className="pointer-events-none fixed left-0 top-0 z-[9997] rounded-full"
+            style={{
+              transform: `translate(${particle.x - particle.size / 2}px, ${particle.y - particle.size / 2}px)`,
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
+              backgroundColor: "#00ff88",
+              opacity: particle.opacity,
+              boxShadow: `0 0 ${4 + particle.size}px rgba(0, 255, 136, ${particle.opacity * 0.6}), 0 0 ${8 + particle.size}px rgba(0, 255, 136, ${particle.opacity * 0.3})`,
+              transition: "opacity 0.1s ease-out",
+            }}
+          />
+        ))}
 
       {/* Main cursor dot */}
       <motion.div

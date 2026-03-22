@@ -10,6 +10,7 @@ import { CapabilitiesSection } from "@/components/capabilities-section"
 import { GithubActivity } from "@/components/github-activity"
 import { DeploymentsSection } from "@/components/deployments-section"
 import { ThinkingLogsSection } from "@/components/thinking-logs-section"
+import { TestimonialsSection } from "@/components/testimonials-section"
 import { TimelineSection } from "@/components/timeline-section"
 import { ContactSection } from "@/components/contact-section"
 import { Footer } from "@/components/footer"
@@ -23,6 +24,9 @@ import { Spotlight } from "@/components/spotlight"
 import { CommandPalette } from "@/components/command-palette"
 import { KonamiEasterEgg } from "@/components/konami-easter-egg"
 import { InteractiveTerminal } from "@/components/interactive-terminal"
+import { SoundProvider, SoundToggle } from "@/components/sound-toggle"
+import { SectionNav } from "@/components/section-nav"
+import { Achievements } from "@/components/achievements"
 
 export default function Home() {
   const [bootState, setBootState] = useState<"booting" | "done">("booting")
@@ -38,6 +42,7 @@ export default function Home() {
 
       {/* Main content */}
       {bootState === "done" && (
+        <SoundProvider>
         <SmoothScroll>
           <main className="relative min-h-screen bg-black">
             {/* === GLOBAL EFFECTS === */}
@@ -49,9 +54,12 @@ export default function Home() {
             <CommandPalette />
             <KonamiEasterEgg />
             <InteractiveTerminal />
+            <SoundToggle />
+            <Achievements />
 
             {/* === NAVIGATION === */}
             <Navigation />
+            <SectionNav />
 
             {/* === SECTIONS === */}
             <HeroSection />
@@ -85,6 +93,10 @@ export default function Home() {
             </SectionReveal>
 
             <SectionReveal>
+              <TestimonialsSection />
+            </SectionReveal>
+
+            <SectionReveal>
               <ContactSection />
             </SectionReveal>
 
@@ -105,6 +117,7 @@ export default function Home() {
             </div>
           </main>
         </SmoothScroll>
+        </SoundProvider>
       )}
     </>
   )

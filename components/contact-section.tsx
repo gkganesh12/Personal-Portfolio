@@ -3,6 +3,7 @@
 import { motion, useInView } from "framer-motion"
 import { useRef, useState } from "react"
 import { Github, Linkedin, Mail, Twitter, Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react"
+import { playSoundGlobal } from "./sound-toggle"
 import { TextReveal } from "./text-reveal"
 import { MagneticButton } from "./magnetic-button"
 
@@ -13,7 +14,7 @@ const socialLinks = [
   { name: "Email", icon: Mail, href: "mailto:gkganesh448@gmail.com" },
 ]
 
-const WEB3FORMS_KEY = "YOUR_ACCESS_KEY_HERE"
+const WEB3FORMS_KEY = "11c7fe9b-92b1-42c2-ac40-9a380c4f34e8"
 
 export function ContactSection() {
   const ref = useRef(null)
@@ -40,14 +41,17 @@ export function ContactSection() {
 
       const data = await res.json()
       if (data.success) {
+        playSoundGlobal("success")
         setFormState("success")
         setFormData({ name: "", email: "", message: "" })
         setTimeout(() => setFormState("idle"), 4000)
       } else {
+        playSoundGlobal("error")
         setFormState("error")
         setTimeout(() => setFormState("idle"), 4000)
       }
     } catch {
+      playSoundGlobal("error")
       setFormState("error")
       setTimeout(() => setFormState("idle"), 4000)
     }
@@ -215,7 +219,7 @@ export function ContactSection() {
           className="flex items-center justify-center gap-6"
         >
           {socialLinks.map((link, i) => (
-            <MagneticButton key={link.name} as="a" href={link.href} target="_blank" rel="noopener noreferrer" strength={0.4}>
+            <MagneticButton key={link.name} as="a" href={link.href} target="_blank" rel="noopener noreferrer" strength={0.4} onClick={() => window.dispatchEvent(new CustomEvent("achievement:social"))}>
               <motion.div
                 initial={{ opacity: 0, scale: 0 }}
                 animate={isInView ? { opacity: 1, scale: 1 } : {}}

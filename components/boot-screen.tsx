@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { playSoundGlobal } from "./sound-toggle"
 
 const bootMessages = [
   { text: "Initializing neural interface...", icon: "[SYS]" },
@@ -42,6 +43,7 @@ export function BootScreen({ onComplete }: { onComplete: () => void }) {
     } else {
       // Last message shown — glitch then exit
       const timer = setTimeout(() => {
+        playSoundGlobal("success")
         setGlitchActive(true)
         setTimeout(() => {
           setIsComplete(true)

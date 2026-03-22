@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, Minus, Square } from "lucide-react"
+import { playSoundGlobal } from "./sound-toggle"
 
 const COMMANDS: Record<string, string | string[]> = {
   help: [
@@ -151,7 +152,11 @@ export function InteractiveTerminal() {
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const handleOpenTerminal = () => setIsOpen(true)
+    const handleOpenTerminal = () => {
+      setIsOpen(true)
+      playSoundGlobal("success")
+      window.dispatchEvent(new CustomEvent("achievement:terminal"))
+    }
     window.addEventListener("open-terminal", handleOpenTerminal)
     return () => window.removeEventListener("open-terminal", handleOpenTerminal)
   }, [])
@@ -213,6 +218,7 @@ export function InteractiveTerminal() {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
+      playSoundGlobal("click")
       executeCommand(input)
       setInput("")
     } else if (e.key === "ArrowUp") {
@@ -241,7 +247,11 @@ export function InteractiveTerminal() {
     <>
       {/* Terminal toggle button */}
       <motion.button
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          setIsOpen(true)
+          playSoundGlobal("success")
+          window.dispatchEvent(new CustomEvent("achievement:terminal"))
+        }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         className="fixed bottom-6 right-6 z-[90] flex h-14 w-14 items-center justify-center rounded-full border border-[#00ff88]/30 bg-black/80 text-[#00ff88] shadow-[0_0_20px_rgba(0,255,136,0.2)] backdrop-blur-lg transition-all hover:border-[#00ff88]/60 hover:shadow-[0_0_30px_rgba(0,255,136,0.3)]"

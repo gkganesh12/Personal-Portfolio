@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono, Chakra_Petch } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import PageTransition from '@/components/page-transition'
 import './globals.css'
 
 const inter = Inter({ 
@@ -31,6 +32,20 @@ export const metadata: Metadata = {
     icon: '/logo.png',
     apple: '/logo.png',
   },
+  openGraph: {
+    title: 'GANESH.EXE | Developer Portfolio',
+    description: 'Building AI + Cyber Systems. A classified digital system by Ganesh Khetawat.',
+    type: 'website',
+    siteName: 'GANESH.EXE',
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'GANESH.EXE | Developer Portfolio',
+    description: 'Building AI + Cyber Systems. A classified digital system by Ganesh Khetawat.',
+    creator: '@gkganesh01',
+  },
+  manifest: '/manifest.json',
 }
 
 export const viewport: Viewport = {
@@ -46,7 +61,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} ${chakraPetch.variable}`}>
       <body className="font-sans antialiased bg-black text-white overflow-x-hidden">
-        {children}
+        <PageTransition>{children}</PageTransition>
         <Analytics />
       </body>
     </html>
