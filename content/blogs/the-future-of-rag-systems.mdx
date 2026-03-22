@@ -1,0 +1,138 @@
+---
+title: "The Future of RAG Systems"
+excerpt: "How retrieval-augmented generation is changing the landscape of AI applications. Building context-aware intelligent systems."
+date: "2024-02-10"
+tags: ["AI", "LLM", "Engineering"]
+coverImage: "/blog/rag-systems.jpg"
+author: "Ganesh Khetawat"
+featured: false
+---
+
+## Beyond Simple Prompting
+
+Large Language Models are powerful, but they have a fundamental limitation: their knowledge is frozen at training time. RAG (Retrieval-Augmented Generation) bridges this gap by giving LLMs access to external, up-to-date knowledge bases.
+
+But the current state of RAG is just the beginning. Here's where I see the technology heading — and what I've learned building production RAG systems.
+
+## The RAG Stack I Use
+
+### Document Processing Pipeline
+
+```python
+from langchain.document_loaders import DirectoryLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Pinecone
+
+class DocumentPipeline:
+    def __init__(self):
+        self.splitter = RecursiveCharacterTextSplitter(
+            chunk_size=1000,
+            chunk_overlap=200,
+            separators=["\n\n", "\n", ". ", " "]
+        )
+        self.embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+
+    async def ingest(self, directory: str):
+        # Load documents
+        loader = DirectoryLoader(directory, glob="**/*.{pdf,md,txt}")
+        documents = loader.load()
+
+        # Smart chunking
+        chunks = self.splitter.split_documents(documents)
+
+        # Add metadata enrichment
+        enriched = await self.enrich_metadata(chunks)
+
+        # Store in vector database
+        await Pinecone.from_documents(
+            enriched,
+            self.embeddings,
+            index_name="knowledge-base"
+        )
+```
+
+### Hybrid Search Strategy
+
+Pure vector similarity search isn't enough. I use a hybrid approach:
+
+```python
+class HybridRetriever:
+    def __init__(self):
+        self.vector_store = PineconeRetriever(k=10)
+        self.bm25 = BM25Retriever(k=10)
+        self.reranker = CohereReranker(top_n=5)
+
+    async def retrieve(self, query: str):
+        # Parallel retrieval
+        vector_results, keyword_results = await asyncio.gather(
+            self.vector_store.search(query),
+            self.bm25.search(query)
+        )
+
+        # Merge and deduplicate
+        combined = self.merge_results(vector_results, keyword_results)
+
+        # Re-rank for relevance
+        reranked = await self.reranker.rerank(query, combined)
+
+        return reranked
+```
+
+## Common RAG Pitfalls
+
+### 1. Chunking Matters More Than You Think
+
+Bad chunking = bad retrieval = bad answers. I've seen systems go from 40% accuracy to 90% just by improving the chunking strategy.
+
+### 2. Don't Ignore Metadata
+
+Metadata filters can dramatically improve precision. Always store:
+- Source document
+- Section headers
+- Creation date
+- Document type
+- Access level
+
+### 3. Evaluation is Non-Negotiable
+
+```python
+class RAGEvaluator:
+    async def evaluate(self, test_cases: list[TestCase]):
+        results = []
+        for case in test_cases:
+            response = await self.rag_chain.invoke(case.question)
+
+            metrics = {
+                "faithfulness": self.check_faithfulness(response, case.context),
+                "relevance": self.check_relevance(response, case.question),
+                "correctness": self.check_correctness(response, case.answer),
+                "latency": response.metadata.latency_ms
+            }
+            results.append(metrics)
+
+        return self.aggregate(results)
+```
+
+## The Future: Agentic RAG
+
+The next evolution is **agentic RAG** — systems that don't just retrieve and generate, but:
+
+1. **Plan** multi-step retrieval strategies
+2. **Reason** about which sources to trust
+3. **Synthesize** information across multiple documents
+4. **Self-correct** when retrieval quality is low
+
+This is where the real magic happens, and it's what I'm building right now.
+
+## Production Tips
+
+- **Always stream responses** — users prefer seeing tokens flow
+- **Show citations** — build trust by linking to sources
+- **Cache common queries** — 30% of queries are repeated
+- **Monitor retrieval quality** — log and review low-confidence retrievals
+- **Use guardrails** — prevent hallucination with output validation
+
+---
+
+*Building RAG systems? I'd love to compare notes. The field is moving incredibly fast and there's so much to learn from each other.*

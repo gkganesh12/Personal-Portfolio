@@ -1,0 +1,184 @@
+---
+title: "Scaling MERN Applications to 1M Users"
+excerpt: "Lessons learned from scaling a full-stack application. Database sharding, caching strategies, and the art of horizontal scaling."
+date: "2024-02-28"
+tags: ["DevOps", "Backend", "Performance"]
+coverImage: "/blog/scaling.jpg"
+author: "Ganesh Khetawat"
+featured: true
+---
+
+## The Scaling Journey
+
+It started with a simple MERN stack application serving a few hundred users. Within six months, we hit 100K users. By the end of the year, we were staring down 1 million active users — and our infrastructure was screaming.
+
+This is the story of how we scaled, what broke along the way, and the lessons that no tutorial will teach you.
+
+## Phase 1: The "Oh No" Moment (0 → 10K Users)
+
+Everything was fine until it wasn't. Our first real scaling crisis came when a viral social media post drove 10x our normal traffic in under an hour.
+
+### What Broke
+- MongoDB connections maxed out
+- Node.js event loop blocked by synchronous operations
+- React bundle was 2.3MB (uncompressed)
+- No CDN — assets served directly from the origin
+
+### Quick Fixes
+
+```javascript
+// Before: Blocking operation in API route
+app.get('/api/reports', (req, res) => {
+  const data = generateComplexReport() // 3 second blocking call
+  res.json(data)
+})
+
+// After: Move to worker thread
+import { Worker } from 'worker_threads'
+
+app.get('/api/reports', async (req, res) => {
+  const result = await runInWorker('./workers/report-generator.js', {
+    userId: req.user.id,
+    dateRange: req.query.range
+  })
+  res.json(result)
+})
+```
+
+## Phase 2: Database Architecture (10K → 100K Users)
+
+MongoDB was our bottleneck. Here's what we did:
+
+### Read Replicas
+
+```javascript
+const mongoose = require('mongoose')
+
+// Primary for writes
+const primary = mongoose.createConnection(process.env.MONGO_PRIMARY)
+
+// Secondary for reads
+const secondary = mongoose.createConnection(process.env.MONGO_SECONDARY, {
+  readPreference: 'secondaryPreferred'
+})
+```
+
+### Strategic Indexing
+
+We went from 2 indexes to 15, carefully analyzing query patterns:
+
+```javascript
+// Compound index for the most common query
+userSchema.index({
+  status: 1,
+  createdAt: -1,
+  'profile.region': 1
+})
+
+// Text index for search
+userSchema.index({
+  'profile.name': 'text',
+  'profile.bio': 'text'
+})
+```
+
+### Caching Layer
+
+Redis became our best friend:
+
+```javascript
+class CacheService {
+  async getOrSet(key, fetchFn, ttl = 3600) {
+    const cached = await redis.get(key)
+    if (cached) return JSON.parse(cached)
+
+    const fresh = await fetchFn()
+    await redis.setex(key, ttl, JSON.stringify(fresh))
+    return fresh
+  }
+
+  async invalidatePattern(pattern) {
+    const keys = await redis.keys(pattern)
+    if (keys.length) await redis.del(...keys)
+  }
+}
+```
+
+## Phase 3: Horizontal Scaling (100K → 1M Users)
+
+This is where things got serious.
+
+### Kubernetes Deployment
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-server
+spec:
+  replicas: 8
+  strategy:
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  template:
+    spec:
+      containers:
+        - name: api
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+```
+
+### Database Sharding
+
+We sharded by user region:
+
+- **Shard 1**: North America
+- **Shard 2**: Europe
+- **Shard 3**: Asia-Pacific
+- **Shard 4**: Rest of World
+
+### Message Queues
+
+For operations that didn't need immediate response:
+
+```javascript
+// Producer
+await queue.publish('email.send', {
+  to: user.email,
+  template: 'welcome',
+  data: { name: user.name }
+})
+
+// Consumer (separate service)
+queue.subscribe('email.send', async (message) => {
+  await emailService.send(message)
+})
+```
+
+## The Numbers
+
+| Metric | Before | After |
+|--------|--------|-------|
+| Response Time (p95) | 2.3s | 120ms |
+| Throughput | 500 req/s | 15,000 req/s |
+| Uptime | 97.2% | 99.95% |
+| Monthly Cost | $2,400 | $8,500 |
+| Users Supported | 10K | 1M+ |
+
+## Key Takeaways
+
+1. **Profile before optimizing** — we wasted 2 weeks optimizing the wrong thing
+2. **Cache everything** — but have a clear invalidation strategy
+3. **Go async** — if it doesn't need an immediate response, queue it
+4. **Monitor obsessively** — you can't fix what you can't measure
+5. **Plan for 10x** — always design for 10x your current load
+
+---
+
+*Scaling is a journey, not a destination. Have questions about scaling your stack? Let's talk.*
