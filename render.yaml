@@ -2,7 +2,7 @@ services:
   - type: web
     name: ganesh-portfolio
     runtime: static
-    buildCommand: npm install --legacy-peer-deps && npm run build
+    buildCommand: pnpm install --no-frozen-lockfile && pnpm run build
     staticPublishPath: out
     headers:
       - path: /*
