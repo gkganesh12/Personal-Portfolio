@@ -1,9 +1,14 @@
 services:
   - type: web
     name: ganesh-portfolio
-    runtime: node
+    runtime: static
     buildCommand: npm install --legacy-peer-deps && npm run build
-    startCommand: npm start
-    envVars:
-      - key: NODE_ENV
-        value: production
+    staticPublishPath: out
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
