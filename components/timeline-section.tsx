@@ -2,57 +2,65 @@
 
 import { motion, useInView, useScroll, useTransform } from "framer-motion"
 import { useRef } from "react"
-import { Briefcase, GraduationCap, Rocket, Award, Code2 } from "lucide-react"
+import { Briefcase, GraduationCap, Rocket, Award, Code2, Shield, Brain, Cpu } from "lucide-react"
 import { TextReveal } from "./text-reveal"
 
 const timelineEvents = [
   {
-    year: "2024",
-    title: "AI Systems Architect",
-    description: "Leading development of autonomous AI agents and LLM-powered applications. Building the future of intelligent systems.",
-    icon: Rocket,
+    year: "2026",
+    title: "Jr. Software Developer @ Betacraft",
+    description: "Working as a Junior SDE at Betacraft, building production-grade software systems and contributing to real-world engineering projects.",
+    icon: Briefcase,
     color: "#00ff88",
-    tags: ["AI/ML", "LangChain", "System Design"],
+    tags: ["SDE", "Betacraft", "Production"],
+  },
+  {
+    year: "2025",
+    title: "AI Architect",
+    description: "Designing and architecting AI-powered systems and intelligent agents. Pushing the boundaries of what's possible with modern AI.",
+    icon: Brain,
+    color: "#00d4ff",
+    tags: ["AI Architecture", "LLMs", "System Design"],
+  },
+  {
+    year: "2024",
+    title: "University & YC Selections",
+    description: "Selected at prestigious universities including Stanford and Drexel. Recognized by Y Combinator — a testament to innovation and entrepreneurial vision.",
+    icon: GraduationCap,
+    color: "#ff79c6",
+    tags: ["Stanford", "Drexel", "Y Combinator"],
   },
   {
     year: "2023",
-    title: "Senior Full Stack Developer",
-    description: "Architected scalable microservices handling millions of requests. Implemented zero-trust security across the stack.",
-    icon: Code2,
-    color: "#00d4ff",
-    tags: ["Go", "Kubernetes", "AWS"],
-  },
-  {
-    year: "2022",
-    title: "Full Stack Developer",
-    description: "Built enterprise-grade web applications with React and Node.js. Led migration from monolith to microservices.",
-    icon: Briefcase,
-    color: "#ff79c6",
-    tags: ["React", "Node.js", "PostgreSQL"],
-  },
-  {
-    year: "2021",
-    title: "Cybersecurity Certification",
-    description: "Earned Certified Ethical Hacker (CEH) certification. Deep-dived into penetration testing and security architecture.",
-    icon: Award,
+    title: "AI Systems Development",
+    description: "Dove deep into AI and machine learning systems. Built intelligent applications leveraging cutting-edge ML models and frameworks.",
+    icon: Cpu,
     color: "#f1fa8c",
-    tags: ["Security", "PenTest", "OWASP"],
+    tags: ["AI/ML", "Deep Learning", "NLP"],
+  },
+  {
+    year: "2021–22",
+    title: "Cybersecurity Certifications",
+    description: "Earned industry-recognized cybersecurity certifications. Mastered penetration testing, vulnerability assessment, and security architecture.",
+    icon: Award,
+    color: "#8be9fd",
+    tags: ["Certifications", "PenTest", "OWASP"],
   },
   {
     year: "2020",
-    title: "Started Professional Journey",
-    description: "First steps into professional development. Built web apps, contributed to open source, and discovered my passion for AI.",
-    icon: Code2,
-    color: "#8be9fd",
-    tags: ["JavaScript", "Python", "Open Source"],
+    title: "Cybersecurity Journey Begins",
+    description: "Entered the world of cybersecurity. Started learning ethical hacking, network security, and threat analysis — building a security-first mindset.",
+    icon: Shield,
+    color: "#50fa7b",
+    tags: ["Ethical Hacking", "Network Security", "CTF"],
   },
   {
     year: "2019",
-    title: "Computer Science Degree",
-    description: "Graduated with B.Tech in Computer Science. Focused on algorithms, data structures, and machine learning fundamentals.",
-    icon: GraduationCap,
-    color: "#50fa7b",
-    tags: ["Algorithms", "ML", "Research"],
+    title: "The Beginning",
+    description: "Started the journey into tech. Wrote the first lines of code and discovered a passion for building things with technology.",
+    icon: Code2,
+    color: "#bd93f9",
+    tags: ["First Code", "Exploration", "Foundation"],
   },
 ]
 
@@ -156,11 +164,7 @@ export function TimelineSection() {
   return (
     <section ref={containerRef} id="timeline" className="relative px-6 py-24">
       {/* Ambient glow */}
-      <motion.div
-        animate={{ opacity: [0.03, 0.06, 0.03] }}
-        transition={{ duration: 6, repeat: Infinity }}
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00ff88] blur-[150px]"
-      />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00ff88] opacity-[0.04] blur-[150px]" />
 
       <div ref={ref} className="relative z-10 mx-auto max-w-5xl">
         {/* Section header */}
@@ -180,8 +184,8 @@ export function TimelineSection() {
             transition={{ delay: 0.3 }}
             className="mx-auto mt-4 max-w-xl text-white/60"
           >
-            From writing my first line of code to architecting AI systems.
-            Every chapter shaped the developer I am today.
+            From writing my first line of code to architecting AI systems and working as an SDE.
+            Every chapter shaped the engineer I am today.
           </motion.p>
         </motion.div>
 

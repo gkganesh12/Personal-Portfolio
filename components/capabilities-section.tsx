@@ -94,7 +94,7 @@ function RadarChart({ isInView }: { isInView: boolean }) {
         <div className="relative overflow-hidden rounded-lg border border-white/10 bg-white/[0.02] p-6 backdrop-blur-sm">
           <svg
             viewBox={`0 0 ${size} ${size}`}
-            className="h-[300px] w-[300px] sm:h-[380px] sm:w-[380px]"
+            className="h-[250px] w-[250px] sm:h-[380px] sm:w-[380px]"
           >
             {/* Glow filter for data points */}
             <defs>
@@ -250,14 +250,7 @@ export function CapabilitiesSection() {
       className="relative min-h-screen px-6 py-24"
     >
       {/* Animated ambient glow */}
-      <motion.div
-        animate={{
-          x: ["-10%", "10%", "-10%"],
-          y: ["-5%", "5%", "-5%"],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute left-1/4 top-1/2 h-[500px] w-[500px] -translate-y-1/2 rounded-full bg-[#00ff88]/5 blur-[100px]"
-      />
+      <div className="pointer-events-none absolute left-1/4 top-1/2 h-[500px] w-[500px] -translate-y-1/2 rounded-full bg-[#00ff88]/5 blur-[100px]" />
 
       <div className="relative z-10 mx-auto max-w-6xl">
         {/* Section header */}

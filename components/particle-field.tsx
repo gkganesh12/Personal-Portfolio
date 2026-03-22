@@ -1,10 +1,10 @@
 "use client"
 
-import { useRef, useMemo, useEffect } from "react"
+import { useRef, useMemo, useEffect, useState } from "react"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import * as THREE from "three"
 
-function Particles({ count = 2000 }) {
+function Particles({ count = 600 }) {
   const mesh = useRef<THREE.Points>(null)
   const mouse = useRef({ x: 0, y: 0 })
   const { viewport } = useThree()
@@ -38,7 +38,7 @@ function Particles({ count = 2000 }) {
       mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1
       mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1
     }
-    window.addEventListener("mousemove", handleMouseMove)
+    window.addEventListener("mousemove", handleMouseMove, { passive: true })
     return () => window.removeEventListener("mousemove", handleMouseMove)
   }, [])
 
@@ -52,12 +52,10 @@ function Particles({ count = 2000 }) {
       const i3 = i * 3
       const speed = speeds[i]
 
-      // Gentle floating motion
       posArray[i3] = originalPositions[i3] + Math.sin(time * speed + i) * 0.3
       posArray[i3 + 1] = originalPositions[i3 + 1] + Math.cos(time * speed + i * 0.5) * 0.3
       posArray[i3 + 2] = originalPositions[i3 + 2] + Math.sin(time * speed * 0.5 + i * 0.3) * 0.2
 
-      // Mouse repulsion
       const dx = posArray[i3] - mouse.current.x * viewport.width * 0.5
       const dy = posArray[i3 + 1] - mouse.current.y * viewport.height * 0.5
       const dist = Math.sqrt(dx * dx + dy * dy)
@@ -134,15 +132,30 @@ function FloatingGrid() {
 }
 
 export function ParticleField() {
+  const [visible, setVisible] = useState(true)
+
+  useEffect(() => {
+    // Pause when scrolled past the hero
+    const handleScroll = () => {
+      setVisible(window.scrollY < window.innerHeight * 1.5)
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    handleScroll()
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  if (!visible) return null
+
   return (
     <div className="pointer-events-none fixed inset-0 z-0">
       <Canvas
         camera={{ position: [0, 0, 6], fov: 60 }}
-        dpr={[1, 1.5]}
-        gl={{ antialias: false, alpha: true }}
+        dpr={1}
+        gl={{ antialias: false, alpha: true, powerPreference: "low-power" }}
         style={{ background: "transparent" }}
+        frameloop="always"
       >
-        <Particles count={1500} />
+        <Particles count={600} />
         <FloatingGrid />
         <ambientLight intensity={0.1} />
       </Canvas>

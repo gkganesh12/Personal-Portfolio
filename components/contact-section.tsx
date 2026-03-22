@@ -63,23 +63,9 @@ export function ContactSection() {
       ref={ref}
       className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24"
     >
-      {/* Multiple animated glows */}
-      <motion.div
-        animate={{
-          scale: [1, 1.3, 1],
-          opacity: [0.05, 0.1, 0.05],
-        }}
-        transition={{ duration: 4, repeat: Infinity }}
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00ff88] blur-[100px]"
-      />
-      <motion.div
-        animate={{
-          scale: [1.3, 1, 1.3],
-          opacity: [0.03, 0.06, 0.03],
-        }}
-        transition={{ duration: 5, repeat: Infinity }}
-        className="pointer-events-none absolute left-1/3 top-1/3 h-[400px] w-[400px] rounded-full bg-[#00d4ff] blur-[120px]"
-      />
+      {/* Static ambient glows */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00ff88] opacity-[0.07] blur-[100px]" />
+      <div className="pointer-events-none absolute left-1/3 top-1/3 h-[400px] w-[400px] rounded-full bg-[#00d4ff] opacity-[0.04] blur-[120px]" />
 
       <div className="relative z-10 w-full max-w-4xl text-center">
         {/* Section header */}

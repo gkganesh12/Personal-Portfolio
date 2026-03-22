@@ -15,40 +15,50 @@ export function MatrixRain() {
     let animationId: number
     let width = window.innerWidth
     let height = window.innerHeight
+    let paused = false
+    let frameCount = 0
 
     canvas.width = width
     canvas.height = height
 
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+-=[]{}|;:,.<>?/~`アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン"
-    const fontSize = 14
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()アイウエオカキクケコサシスセソ"
+    const fontSize = 16
     const columns = Math.floor(width / fontSize)
     const drops: number[] = Array(columns).fill(1)
     const speeds: number[] = Array(columns).fill(0).map(() => Math.random() * 0.5 + 0.3)
 
+    // Pause when scrolled past hero
+    const handleScroll = () => {
+      paused = window.scrollY > window.innerHeight * 1.2
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true })
+
     function draw() {
-      ctx!.fillStyle = "rgba(0, 0, 0, 0.05)"
+      // Throttle to ~20fps (skip 2 out of 3 frames)
+      frameCount++
+      if (frameCount % 3 !== 0) {
+        animationId = requestAnimationFrame(draw)
+        return
+      }
+
+      if (paused) {
+        animationId = requestAnimationFrame(draw)
+        return
+      }
+
+      ctx!.fillStyle = "rgba(0, 0, 0, 0.06)"
       ctx!.fillRect(0, 0, width, height)
+
+      ctx!.fillStyle = "#00ff88"
+      ctx!.font = `${fontSize}px monospace`
+      ctx!.globalAlpha = 0.7
 
       for (let i = 0; i < drops.length; i++) {
         const char = chars[Math.floor(Math.random() * chars.length)]
         const x = i * fontSize
         const y = drops[i] * fontSize
 
-        // Head character - bright green
-        ctx!.fillStyle = "#00ff88"
-        ctx!.font = `${fontSize}px monospace`
-        ctx!.globalAlpha = 0.8
         ctx!.fillText(char, x, y)
-
-        // Trail characters - dimmer
-        if (drops[i] > 1) {
-          ctx!.fillStyle = "#00ff88"
-          ctx!.globalAlpha = 0.15
-          const trailChar = chars[Math.floor(Math.random() * chars.length)]
-          ctx!.fillText(trailChar, x, y - fontSize)
-        }
-
-        ctx!.globalAlpha = 1
 
         if (y > height && Math.random() > 0.975) {
           drops[i] = 0
@@ -57,6 +67,7 @@ export function MatrixRain() {
         drops[i] += speeds[i]
       }
 
+      ctx!.globalAlpha = 1
       animationId = requestAnimationFrame(draw)
     }
 
@@ -73,6 +84,7 @@ export function MatrixRain() {
     return () => {
       cancelAnimationFrame(animationId)
       window.removeEventListener("resize", handleResize)
+      window.removeEventListener("scroll", handleScroll)
     }
   }, [])
 

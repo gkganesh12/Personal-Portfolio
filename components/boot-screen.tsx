@@ -99,7 +99,7 @@ export function BootScreen({ onComplete }: { onComplete: () => void }) {
           )}
 
           {/* Terminal container */}
-          <div className="w-full max-w-lg px-8">
+          <div className="w-full max-w-lg px-4 sm:px-8">
             {/* Header bar */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
@@ -129,7 +129,7 @@ export function BootScreen({ onComplete }: { onComplete: () => void }) {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: i * 0.2 }}
-                  className="font-mono text-[10px] text-white/20"
+                  className="font-mono text-[8px] sm:text-[10px] text-white/20"
                 >
                   {stat}
                 </motion.div>

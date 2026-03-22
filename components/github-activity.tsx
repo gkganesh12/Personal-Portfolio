@@ -202,7 +202,7 @@ export function GithubActivity() {
           <TiltCard>
             <div className="rounded-lg border border-white/10 bg-white/[0.02] p-4 transition-all duration-500 hover:border-[#00ff88]/20 hover:shadow-[0_0_30px_rgba(0,255,136,0.05)]">
               {loading ? (
-                <div className="flex items-center justify-around gap-4">
+                <div className="flex flex-wrap items-center justify-around gap-4">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <div key={i} className="flex flex-col items-center gap-2">
                       <SkeletonPulse className="h-4 w-16" />
@@ -265,23 +265,11 @@ export function GithubActivity() {
                     )}
                   </motion.span>
                 </div>
-                <div className="flex flex-wrap gap-[3px]">
+                <div className="flex flex-wrap gap-[2px] sm:gap-[3px]">
                   {contributionGrid.map((level, i) => (
-                    <motion.div
+                    <div
                       key={i}
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                      transition={{
-                        duration: 0.2,
-                        delay: Math.min(i * 0.002, 1),
-                        ease: "easeOut",
-                      }}
-                      whileHover={{
-                        scale: 2,
-                        zIndex: 10,
-                        boxShadow: level > 0 ? "0 0 8px rgba(0,255,136,0.5)" : "none",
-                      }}
-                      className={`h-[10px] w-[10px] rounded-sm ${levelColors[level]} transition-shadow`}
+                      className={`h-[7px] w-[7px] sm:h-[10px] sm:w-[10px] rounded-sm ${levelColors[level]} transition-transform hover:scale-150`}
                     />
                   ))}
                 </div>

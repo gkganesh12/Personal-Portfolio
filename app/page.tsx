@@ -103,11 +103,6 @@ export default function Home() {
             {/* === FOOTER === */}
             <Footer />
 
-            {/* Noise texture */}
-            <div className="pointer-events-none fixed inset-0 z-50 opacity-[0.015]">
-              <div className="h-full w-full bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIzMDAiIGZpbHRlcj0idXJsKCNhKSIvPjwvc3ZnPg==')]" />
-            </div>
-
             {/* Ctrl+K hint */}
             <div className="fixed bottom-6 left-6 z-[90] hidden items-center gap-2 rounded-lg border border-white/10 bg-black/60 px-3 py-2 font-mono text-xs text-white/30 backdrop-blur-lg md:flex">
               <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5">Ctrl</kbd>

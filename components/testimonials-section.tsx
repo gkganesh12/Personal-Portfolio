@@ -66,14 +66,7 @@ export function TestimonialsSection() {
       className="relative min-h-screen px-6 py-24"
     >
       {/* Ambient glow */}
-      <motion.div
-        animate={{
-          opacity: [0.03, 0.08, 0.03],
-          scale: [1, 1.2, 1],
-        }}
-        transition={{ duration: 6, repeat: Infinity }}
-        className="pointer-events-none absolute left-1/4 top-1/3 h-[500px] w-[500px] rounded-full bg-[#00ff88] blur-[100px]"
-      />
+      <div className="pointer-events-none absolute left-1/4 top-1/3 h-[500px] w-[500px] rounded-full bg-[#00ff88] opacity-[0.05] blur-[100px]" />
 
       <div className="relative z-10 mx-auto max-w-6xl">
         {/* Section header */}

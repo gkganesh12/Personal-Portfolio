@@ -130,7 +130,7 @@ function AchievementToast({
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 320, opacity: 0 }}
       transition={{ type: "spring", damping: 25, stiffness: 300 }}
-      className="pointer-events-auto flex items-center gap-3 rounded-lg border border-[#00ff88]/30 bg-black/90 px-4 py-3 font-mono text-sm backdrop-blur-md shadow-[0_0_20px_rgba(0,255,136,0.15)]"
+      className="pointer-events-auto flex items-center gap-3 rounded-lg border border-[#00ff88]/30 bg-black/90 px-3 py-2.5 sm:px-4 sm:py-3 font-mono text-xs sm:text-sm backdrop-blur-md shadow-[0_0_20px_rgba(0,255,136,0.15)] max-w-[calc(100vw-2rem)]"
     >
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#00ff88]/10">
         <Icon className="h-5 w-5 text-[#00ff88]" />
@@ -162,7 +162,7 @@ function AchievementPanel({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -12, scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className="fixed right-4 top-20 z-[85] w-80 rounded-xl border border-white/10 bg-black/95 p-4 font-mono backdrop-blur-xl shadow-2xl"
+      className="fixed right-2 left-2 top-16 z-[85] w-auto sm:left-auto sm:right-4 sm:top-20 sm:w-80 rounded-xl border border-white/10 bg-black/95 p-4 font-mono backdrop-blur-xl shadow-2xl"
     >
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
@@ -314,7 +314,7 @@ export function Achievements() {
       {/* Trophy button */}
       <button
         onClick={() => setPanelOpen((v) => !v)}
-        className="fixed right-4 top-4 z-[85] flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-black/60 text-white/60 backdrop-blur-md transition-all hover:border-[#00ff88]/30 hover:text-[#00ff88] hover:shadow-[0_0_12px_rgba(0,255,136,0.12)]"
+        className="fixed right-14 top-4 z-[85] flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-black/60 text-white/60 backdrop-blur-md transition-all hover:border-[#00ff88]/30 hover:text-[#00ff88] hover:shadow-[0_0_12px_rgba(0,255,136,0.12)] sm:right-4"
         aria-label="Achievements"
       >
         <Trophy className="h-4 w-4" />

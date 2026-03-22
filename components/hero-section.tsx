@@ -93,17 +93,15 @@ function FloatingIcon({ icon: Icon, delay, x, y, rotate }: { icon: any; delay: n
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 0.15, scale: 1 }}
       transition={{ delay, duration: 1, ease: "easeOut" }}
-      className="pointer-events-none absolute"
+      className="pointer-events-none absolute hidden md:block"
       style={{ left: x, top: y }}
     >
       <motion.div
         animate={{
           y: [0, -15, 0],
-          rotateZ: [rotate, rotate + 10, rotate],
-          rotateY: [0, 180, 360],
+          rotate: [rotate, rotate + 10, rotate],
         }}
         transition={{ duration: 6 + delay, repeat: Infinity, ease: "easeInOut" }}
-        style={{ transformStyle: "preserve-3d" }}
       >
         <Icon className="h-8 w-8 text-[#00ff88]/40" />
       </motion.div>
@@ -143,30 +141,17 @@ export function HeroSection() {
       <FloatingIcon icon={Shield} delay={1.3} x="75%" y="15%" rotate={-10} />
       <FloatingIcon icon={Cpu} delay={1.5} x="20%" y="45%" rotate={5} />
 
-      {/* Animated orb glow */}
-      <motion.div
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.05, 0.1, 0.05],
-        }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00ff88] blur-[150px]"
+      {/* Static orb glows — no animation to avoid GPU recompositing with blur */}
+      <div
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[400px] w-[400px] md:h-[800px] md:w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00ff88] opacity-[0.07] blur-[150px]"
       />
-
-      {/* Secondary orb */}
-      <motion.div
-        animate={{
-          scale: [1.2, 1, 1.2],
-          opacity: [0.03, 0.07, 0.03],
-          x: ["-30%", "30%", "-30%"],
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute left-1/2 top-1/3 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[#00d4ff] blur-[120px]"
+      <div
+        className="pointer-events-none absolute left-1/3 top-1/3 h-[250px] w-[250px] md:h-[500px] md:w-[500px] rounded-full bg-[#00d4ff] opacity-[0.05] blur-[120px]"
       />
 
       {/* Morphing blobs - very subtle */}
-      <MorphingBlob className="absolute -left-48 top-1/4 opacity-30" color="#00ff88" size={500} />
-      <MorphingBlob className="absolute -right-48 top-1/3 opacity-20" color="#00d4ff" size={400} />
+      <MorphingBlob className="absolute -left-48 top-1/4 opacity-30 hidden md:block" color="#00ff88" size={500} />
+      <MorphingBlob className="absolute -right-48 top-1/3 opacity-20 hidden md:block" color="#00d4ff" size={400} />
 
       <motion.div
         style={{ y: textY, opacity, scale }}
@@ -207,9 +192,9 @@ export function HeroSection() {
             className="mb-6 text-5xl font-bold tracking-tighter sm:text-7xl md:text-8xl"
             style={{ fontFamily: 'var(--font-chakra)' }}
           >
-            <GlitchText className="inline-block shimmer-white">GANESH</GlitchText>
+            <GlitchText className="inline-block shimmer-white" autoGlitch autoGlitchInterval={2000}>GANESH</GlitchText>
             <br />
-            <GlitchText className="inline-block shimmer-green">KHETAWAT</GlitchText>
+            <GlitchText className="inline-block shimmer-green" autoGlitch autoGlitchInterval={2000}>KHETAWAT</GlitchText>
           </motion.h1>
 
           {/* Subtitle with typing effect */}

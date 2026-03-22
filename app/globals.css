@@ -377,13 +377,15 @@
   90% { clip-path: inset(15% 0 70% 0); transform: translate(-1px, -3px); }
 }
 
-.glitch-wrapper:hover .glitch-layer-1 {
+.glitch-wrapper:hover .glitch-layer-1,
+.glitch-wrapper.glitching .glitch-layer-1 {
   color: #00ff88;
   animation: glitch-1 0.3s infinite linear;
   opacity: 0.8;
 }
 
-.glitch-wrapper:hover .glitch-layer-2 {
+.glitch-wrapper:hover .glitch-layer-2,
+.glitch-wrapper.glitching .glitch-layer-2 {
   color: #00d4ff;
   animation: glitch-2 0.3s infinite linear;
   opacity: 0.8;

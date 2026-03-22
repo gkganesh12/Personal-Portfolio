@@ -268,7 +268,7 @@ export function InteractiveTerminal() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, scale: 0.9 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed bottom-6 right-6 z-[95] w-[95vw] max-w-xl overflow-hidden rounded-xl border border-white/10 bg-[#0a0a0a]/95 shadow-[0_0_60px_rgba(0,255,136,0.1)] backdrop-blur-xl sm:bottom-6 sm:right-6"
+            className="fixed bottom-0 left-0 right-0 z-[95] overflow-hidden border-t border-white/10 bg-[#0a0a0a]/95 shadow-[0_0_60px_rgba(0,255,136,0.1)] backdrop-blur-xl sm:bottom-6 sm:left-auto sm:right-6 sm:w-[95vw] sm:max-w-xl sm:rounded-xl sm:border"
             style={{ cursor: "auto" }}
           >
             {/* Terminal header */}
@@ -296,7 +296,7 @@ export function InteractiveTerminal() {
             {/* Terminal content */}
             <div
               ref={scrollRef}
-              className="h-[50vh] max-h-[400px] overflow-y-auto overscroll-contain p-4 font-mono text-sm"
+              className="h-[50vh] max-h-[400px] overflow-y-auto overflow-x-auto overscroll-contain p-3 sm:p-4 font-mono text-xs sm:text-sm"
               onWheel={(e) => e.stopPropagation()}
               onClick={() => inputRef.current?.focus()}
             >

@@ -13,7 +13,7 @@ export function GradientBorder({
   children,
   className,
   borderWidth = 1,
-  speed = 3,
+  speed = 8,
 }: GradientBorderProps) {
   return (
     <div className={cn("relative rounded-xl p-[var(--border-width)]", className)}
@@ -32,14 +32,6 @@ export function GradientBorder({
           }}
         />
       </div>
-
-      {/* Glow effect behind the border */}
-      <div
-        className="absolute inset-0 rounded-xl opacity-40 blur-md"
-        style={{
-          background: "conic-gradient(from 0deg, #00ff88, #00d4ff, #ff00ff, #00ff88)",
-        }}
-      />
 
       {/* Inner content with dark background to create border illusion */}
       <div className="relative rounded-xl bg-[#0a0a0a]">
