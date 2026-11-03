@@ -18,3 +18,5 @@ npm run build   # writes ../public/new (base path /new/)
 
 Commit `ai-summit/` and `public/new/` and push `main`; Render rebuilds the
 portfolio and serves the page at `/new/`.
+
+`public/new.html` (in the portfolio) forwards `/new` to `/new/`.
