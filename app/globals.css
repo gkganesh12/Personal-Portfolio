@@ -1,4 +1,7 @@
 @import 'tailwindcss';
+/* AI Summit (/new) is a separate Vite app; keep Tailwind from scanning it. */
+@source not "../ai-summit";
+@source not "../public/new";
 @import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
